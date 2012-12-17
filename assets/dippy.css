@@ -1,0 +1,84 @@
+.dippy {
+	border: 1px dotted #ddd;
+	padding: 3px;
+	margin: 3px;
+	background-color: white;
+}
+.dippy .dcontrol {
+	background-color: #ddd;
+	margin-bottom: 3px;
+	padding: 3px;
+}
+.dippy .dcontrol a.newItem {
+	color: blue;
+	font-size: 11px;
+	cursor: pointer;
+}
+.dippy .dcontrol a.newItem img {
+	display: none;
+}
+
+.dippy .drow {
+	padding: 3px;
+	margin-bottom: 3px;
+	overflow: auto;
+	cursor: pointer;
+	border-radius: 3px;
+	border: 1px dotted #666;
+}
+.dippy .drow img.wait {
+	display: none;
+}
+
+.drow-selected {
+	background-color: #ddff99;
+}
+
+.dippy .drow-removed {
+	background-color: #eee;
+	padding: 3px;
+	margin-bottom: 3px;
+	overflow: auto;
+	font-style: italic;
+}
+.dippy .drow-removed img.ddelete, 
+.dippy .drow-removed img.dupdate 
+{
+	display: none;
+}
+.dippy .drow-removed img.wait {
+	display: visible;
+}
+
+.dippy .drow-edit {
+	background-color: #ddffaa;
+	padding: 3px;
+	margin-bottom: 3px;
+	overflow: auto;
+	font-style: italic;
+}
+.dippy .drow-edit img.ddelete, 
+.dippy .drow-edit img.dupdate 
+{
+	display: none;
+}
+.dippy .drow-edit img.wait {
+	display: visible;
+}
+.dippy .drow-edit input {
+	background-color: #eee;
+	color: gray;
+}
+
+.dippy .ddelete {
+   	float: right;
+	cursor: pointer;
+}
+
+.dippy .dupdate {
+	float: left;
+	margin-right: 3px;
+	cursor: pointer;
+}
+
+
