@@ -1,6 +1,9 @@
 Dippy Widget
 ============
 
+Manage dependent models (master-detail) in a visual way, using ajax and jquery.
+-------------------------------------------------------------------------------
+
 by:
 
 Christian Salazar. christiansalazarh@gmail.com	@yiienespanol, dic. 2012.
@@ -10,63 +13,181 @@ Christian Salazar. christiansalazarh@gmail.com	@yiienespanol, dic. 2012.
 
 [http://opensource.org/licenses/bsd-license.php](http://opensource.org/licenses/bsd-license.php "http://opensource.org/licenses/bsd-license.php")
 
-[Repository at Bit Bucket !](https://bitbucket.org/christiansalazarh/dippy/ 
- "Repository at Bit Bucket !")
+[Repository at Bit Bucket !](https://bitbucket.org/christiansalazarh/dippy/ "Repository at Bit Bucket !")
 
 #Requirement: 
 
 Yii  1.1.12
-
+jQuery
 
 #What it does ?
 
-[EN]
-This widget helps you when dependent objects are required on your model,
-making it easy for you (as user) to create master-detail items.  
-Every "Dippy" widget can work togheter with another 'Dippy' widget on the same 
-view, in cascade, the second Dippy widget listen for changes in the first 
-Dippy widget, when a change occurs in the first widget a 'refresh' event is 
-fired for the second 'Dippy' Widget.
+Dippy allows you to manage dependent values in a visual way, dippy will automatically handle your models (CComponent based, like CActiveRecord). no interface required !   no config setup required !
 
-Example use case:
+Let me explain using a sample data model, commonly used on ECommerce and Stock applications.
 
-Suppose you have an article, it needs some attributes specified by the user, so
-you can use a Dippy widget #1 in wich the user creates: "Flavor", "Package" 
-items, and so on. 
-As you know, many flavors exists, your user wants to insert each
-flavor and each package, to achive this task you can insert a new Dippy 
-Widget #2 in the same view.
-in the second Dippy Widget your user inserts the Flavors..Peach, Orange, each
-one associated with a parent: The seleceted Flavor in Dippy Widget #1. When
-your user select another item in Dippy Widget #1 the widget #2 automatically
-refresh and show associated content.
+1. An Article.
+2. An ArticleOpt , belongs to an 'Article'.
+3. An OptVal,  belongs to an ArticleOpt.
 
-[ES]
-Este widget te ayuda cuando necesitas crear objetos dependientes en tu modelo,
-haciendo que la creacion de objetos sea facil para el usuario en un escenario
-maestro-detalle.
-Cada widget 'Dippy' puede trabajar concatenado con otro Widget 'Dippy' en la
-misma vista, en cascada, el segundo widget Dippy estara atento a los cambios
-de seleccion del primero Widget causando un evento 'refresh' cuando hay
-cambio de seleccion en el primer widget.
+You can use two (2) Dippy Widgets to manage ARTICLEOPT and OPTVAL. Easy.
 
-Caso de ejemplo:
+	[ARTICLE]
+	ARTICLEID	NAME
+	-----------------------
+	AAA123		BROWIES
+	AAA124		CAKES
 
-Para un articulo que se vende en internet, necesitas indicar atributos,
-por ejemplo: 'Sabor', 'Empaque'.  El primer Widget Dippy te permite crear
-estos items, asociandolos a un Articulo (su maestro).
+	[ARTICLEOPT]
+	ARTOPTID	ARTICLEID	NAME
+	-----------------------------------------
+	00000001	ART123		FLAVOR
+	00000002	ART123		PACKAGE
 
-Un segundo widget Dippy, podrá usarse para crear los Sabores, y los Empaques,
-dependiendo de si se selecciono 'Sabor' o 'Empaque' en el primer widget, 
-cuando la seleccion cambia en el primer Widget el segundo se actualiza.  Al
-crea un nuevo 'Sabor' este dato quedara enlazado con su maestro, por ejemplo,
-'Peach', 'Orange' son sabores que el usuario va insertando.
+	[OPTVAL]
+	OPTVALID	ARTOPTID	NAME
+	-------------------------------
+	10000000	00000001	CHOCO	(flavor)
+	20000000	00000001	NUTS	(flavor)
+	30000000	00000002	PLASTIC	(package)
+	40000000	00000002	BAG	(package)
 
-#Usage
 
-## Insert and configure the Widget.
+#For each model, manage it using a Dippy Widget.
 
+This is a simple Dippy Widget, used to manage a single model:
+
+![Simple Dippy]
+(https://bitbucket.org/christiansalazarh/dippy/downloads/dippy.png "Simple Dippy")
+
+You can concatenate two (2) or more Dippy Widgets, each one for every dependent model.
+
+#Example Usage:
+
+**AT FIRST PLACE**, if your widgets points to 'controllerName'=>'site' then put the following in 'site' controller:
 ~~~
 [php]
+public function actions() { 
+	return array(
+		'dippy'=>array('class'=>'ext.dippy.DippyAction')
+	); 
+}
 ~~~
+
+**NEXT, IN YOUR VIEW:**
+
+~~~
+<h1>Dippy Demo</h1>
+
+<label>Type an article code:</label>
+<input type='text' id='Article_articleid' value='AAA123'>
+<!-- 
+please note: DippyWidget will bind a 'change event' using jQuery for this input element, so when this value changes dippy refresh automatically)
+-->
+
+<div style='width: 300px; padding: 10px; border: 2px solid #aaa;
+border-radius: 5px;margin-top: 10px;'>
+
+<?php
+$this->widget('ext.dippy.DippyWidget',array(
+	'title'=>'Article Options',
+	'id'=>'dippy1',
+	'controllerName'=>'site',	 	 // read note below
+	'parent'=>'Article_articleid',	 //	parent key value
+	'modelName'=>'ArticleOpt',		 //	your model name
+	'parentKey'=>'articleid',		 // model belongs to (attribute name)
+	'attribute'=>'name',			 // the text to edit and display
+	//'logid'=>'logger',			 // ref. to: <div id='logid'></div>
+));
+
+/*
+**Now insert a second Dippy Widget** (note the 'parent'=>'dippy1' value) this 2nd dippy widget is listening for dippy1 selection change, when a selection change occurs, it will refresh and display the dependent values (the OptVal whos parent is the ArtOpt model)
+*/
+
+$this->widget('ext.dippy.DippyWidget',array(
+	'title'=>'Selection Values:',
+	'id'=>'dippy2',
+	'controllerName'=>'site',
+	'parent'=>'dippy1',	// IMPORTANT! now parent is 'dippy1'
+	'modelName'=>'OptVal',
+	'parentKey'=>'artoptid',
+	'attribute'=>'name', // the text to edit and display
+));
+?>
+
+<div id='logger'></div>
+</div>
+~~~
+
+#Your models:
+
+
+models.ArticleOpt.php
+~~~
+[php]
+class ArticleOpt extends CActiveRecord
+{
+	public function onBeforeValidate($event){
+		$this->artoptid = sprintf("%08d",time());
+		$this->name = '* New Item *';
+	}
+  ...
+}
+~~~
+
+
+models.OptVal.php
+~~~
+[php]
+class OptVal extends CActiveRecord
+{
+
+	public function onBeforeValidate($event){
+		$this->optvalid = sprintf("%08d",time());
+		$this->name = '* New Value *';
+	}
+  ...
+}
+~~~
+
+
+Demo Files (only for demostration)
+----------------------------------
+
+[sql]
+~~~
+CREATE TABLE IF NOT EXISTS `article` (
+  `articleid` char(10) NOT NULL,
+  `name` text NOT NULL,
+  PRIMARY KEY (`articleid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `article` (`articleid`, `name`) VALUES
+('AAA123', 'BROWNIE'),
+('AAA124', 'CAKES');
+
+CREATE TABLE IF NOT EXISTS `articleopt` (
+  `artoptid` char(10) NOT NULL,
+  `articleid` char(10) NOT NULL,
+  `name` text NOT NULL,
+  PRIMARY KEY (`artoptid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+INSERT INTO `articleopt` (`artoptid`, `articleid`, `name`) VALUES
+('00000001', 'AAA123', 'Flavor'),
+('00000002', 'AAA123', 'Package');
+
+CREATE TABLE IF NOT EXISTS `optval` (
+  `optvalid` char(10) NOT NULL,
+  `artoptid` char(10) NOT NULL,
+  `name` text NOT NULL,
+  PRIMARY KEY (`optvalid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+INSERT INTO `optval` (`optvalid`, `artoptid`, `name`) VALUES
+('10000000', '00000001', 'CHOCO'),
+('20000000', '00000001', 'NUTS'),
+('30000000', '00000002', 'PLASTIC'),
+('40000000', '00000002', 'BAG');
+~~~
+
+
 

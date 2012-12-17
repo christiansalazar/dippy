@@ -18,8 +18,10 @@ var Dippy = function(options){
 			var uuid = dateObject.getTime();
 			return "&nocache="+uuid;
 		}
+		var url = action+nocache();
+		logger(url);
 		jQuery.ajax({
-			url: action+nocache(),
+			url: url,
 			type: 'post',
 			async: true,
 			contentType: "application/json",

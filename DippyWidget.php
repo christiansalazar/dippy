@@ -1,4 +1,82 @@
 <?php
+/**
+ * DippyWidget
+ *
+ *	Dippy allows you to manage dependent values in a visual way, 
+ *	dippy will automatically handle your models (CComponent based, like
+ *  CActiveRecord).
+ *
+ *	no interface required !   no config setup required !
+ *
+ *  EXAMPLE USE CASE:
+ *
+ *	at first place, suppose we have the following data model:
+ *
+ *	1) An Article
+ *		2) An ArticleOpt , belongs to an 'Article'
+ *			3) An OptVal,  belongs to an ArticleOpt
+ *
+ *	[ARTICLE]				[ARTICLEOPT]
+ *	ARTICLEID	NAME		ARTOPTID	ARTICLEID	NAME
+ *	-------------------		-------------------------------
+ *	AAA123		BROWIES		00000001	ART123		FLAVOR
+ *	AAA123		CAKES		00000002	ART123		PACKAGE
+ *
+ *							[OPTVAL]
+ *							OPTVALID	ARTOPTID	NAME
+ *							-------------------------------
+ *							10000000	00000001	CHOCO		(flavor)
+ *							20000000	00000001	NUTS		(flavor)
+ *							...............................
+ *							30000000	00000002	PLASTIC		(package)
+ *							40000000	00000002	BAG			(package)
+ *
+ *	You can use two (2) Dippy Widgets to manage ARTICLEOPT and OPTVAL. Easy.
+ *
+ *	<label>Type an article code:</label>
+ *	<input type='text' id='Article_articleid' value='AAA-123'>
+ *		(please note: DippyWidget will bind a 'change event' using jQuery
+ *		 for this input element, so when this value changes dippy refresh)
+ *
+ *	$this->widget('ext.dippy.DippyWidget',array(
+ *		'title'=>'Article Options',
+ *		'id'=>'dippy1',
+ *		'controllerName'=>'article',	 // read note below
+ *		'parent'=>'Article_articleid',	 //	parent key value
+ *		'modelName'=>'ArticleOpt',		 //	your model name
+ *		'parentKey'=>'articleid',		 // model belongs to (attribute name)
+ *		'attribute'=>'name',			 // the text to edit and display
+ *		//'logid'=>'logger',			 // ref. to: <div id='logid'></div>
+ *	));
+ *
+ *	because the main usage for Dippy is for dependent values, now insert
+ *	a second Dippy Widget, it is listen for dippy1 selection change, when a
+ *	selection change occurs, it will display the Article Options child values.
+ *
+ *	$this->widget('ext.dippy.DippyWidget',array(
+ *		'title'=>'Selection Values:',
+ *		'id'=>'dippy2',
+ *		'controllerName'=>'article',	 // read note below
+ *		'parent'=>'dippy1',	 			 //	IMPORTANT !! parent is 'dippy1'
+ *		'modelName'=>'OptVal',			 //	your model name
+ *		'parentKey'=>'artoptid',		 // model belongs to (attribute name)
+ *		'attribute'=>'name',			 // the text to edit and display
+ *	));
+ *
+ *
+ *	NOTE ABOUT: 'controllerName'
+ *	in this controller referenced by its name you must add the following:
+ *	
+ *		public function actions() { 
+ *			return array(
+ * 				'dippy'=>array('class'=>'ext.dippy.DippyAction')
+ *			); 
+ *		}
+ *
+ * @uses CWidget
+ * @author Christian Salazar <christiansalazarh@gmail.com> 
+ * @license http://opensource.org/licenses/bsd-license.php
+ */
 class DippyWidget extends CWidget {
 
 	public $id;
@@ -117,7 +195,7 @@ class DippyWidget extends CWidget {
 			foreach($model->findAllByAttributes(array(
 				$parentKey=>$parent)) as $m)
 					$a[$m->primarykey] = $m[$attribute];
-			header('Content-Type: text/json');
+			header("Content-type: application/json");
 			echo CJSON::encode($a);
 		}
 
@@ -127,7 +205,7 @@ class DippyWidget extends CWidget {
 			$model[$parentKey] = $parent;
 			$model[$attribute] = 'new item';
 			if($model->save()){ // using Save, to get validation
-				header('Content-Type: text/json');
+			header("Content-type: application/json");
 				echo CJSON::encode(array(
 					'id'=>$model->primarykey, 
 					'text'=>$model[$attribute]
