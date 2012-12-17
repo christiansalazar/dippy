@@ -82,7 +82,8 @@ public function actions() {
 <label>Type an article code:</label>
 <input type='text' id='Article_articleid' value='AAA123'>
 <!-- 
-please note: DippyWidget will bind a 'change event' using jQuery for this input element, so when this value changes dippy refresh automatically)
+please note: DippyWidget will bind a 'change event' using jQuery for 
+this input element, so when this value changes dippy refresh automatically)
 -->
 
 <div style='width: 300px; padding: 10px; border: 2px solid #aaa;
@@ -101,7 +102,10 @@ $this->widget('ext.dippy.DippyWidget',array(
 ));
 
 /*
-**Now insert a second Dippy Widget** (note the 'parent'=>'dippy1' value) this 2nd dippy widget is listening for dippy1 selection change, when a selection change occurs, it will refresh and display the dependent values (the OptVal whos parent is the ArtOpt model)
+  Now insert a second Dippy Widget** (note the 'parent'=>'dippy1' value) 
+  this 2nd dippy widget is listening for dippy1 selection change, when a 
+  selection change occurs, it will refresh and display the dependent values 
+  (the OptVal whos parent is the ArtOpt model)
 */
 
 $this->widget('ext.dippy.DippyWidget',array(
