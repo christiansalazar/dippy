@@ -66,7 +66,6 @@ You can concatenate two (2) or more Dippy Widgets, each one for every dependent 
 
 **AT FIRST PLACE**, if your widgets points to 'controllerName'=>'site' then put the following in 'site' controller:
 ~~~
-[php]
 public function actions() { 
 	return array(
 		'dippy'=>array('class'=>'ext.dippy.DippyAction')
@@ -128,7 +127,6 @@ $this->widget('ext.dippy.DippyWidget',array(
 
 models.ArticleOpt.php
 ~~~
-[php]
 class ArticleOpt extends CActiveRecord
 {
 	public function onBeforeValidate($event){
@@ -142,7 +140,6 @@ class ArticleOpt extends CActiveRecord
 
 models.OptVal.php
 ~~~
-[php]
 class OptVal extends CActiveRecord
 {
 
@@ -158,7 +155,6 @@ class OptVal extends CActiveRecord
 Demo Files (only for demostration)
 ----------------------------------
 
-[sql]
 ~~~
 CREATE TABLE IF NOT EXISTS `article` (
   `articleid` char(10) NOT NULL,
