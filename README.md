@@ -122,6 +122,42 @@ $this->widget('ext.dippy.DippyWidget',array(
 </div>
 ~~~
 
+#onChange Event
+
+Call a JS function whenever a Dippy selection changes. You can use the
+same JS function for all dippy widgets, so look for the dippyId argument to
+identify wich widget is making the call. The selectionId arguments is the
+primary key passed when dippy makes a refresh.
+
+
+~~~
+<?php
+$this->widget('ext.dippy.DippyWidget',array(
+	'title'=>'Selection Values:',
+	'id'=>'dippy2',
+	'controllerName'=>'site',
+	'parent'=>'dippy1',
+	'modelName'=>'OptVal',
+	'parentKey'=>'artoptid',
+	'attribute'=>'name',
+	'onChange' => "function(dippyId, selectionId){ ...yourcodehere..  }",
+));
+?>
+~~~
+
+Example:
+
+in the same view were dippy widget is located, insert a text field:
+
+	echo CHtml::textField('dippy2cur');
+
+now add the onChange event handler, like this:
+
+	'onChange' => "function(wid, id){ $('#dippy2cur').val(id);  }",
+
+makes a selection on your Dippy widget and you will observe the text field
+changes too.  This would be usefull when validation is required on your form.
+
 #Your models:
 
 
@@ -188,6 +224,4 @@ INSERT INTO `optval` (`optvalid`, `artoptid`, `name`) VALUES
 ('30000000', '00000002', 'PLASTIC'),
 ('40000000', '00000002', 'BAG');
 ~~~
-
-
 

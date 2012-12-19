@@ -95,6 +95,8 @@ class DippyWidget extends CWidget {
 	public $validateErrorText = 'Please type a valid value';
 	public $validateRegExp = '';
 
+	public	$onChange; // function(dippyId, selectdId){   } 
+
 	public $onSuccess;
 	public $onError;
 	private $_baseUrl;
@@ -103,6 +105,8 @@ class DippyWidget extends CWidget {
 		parent::init();
 		if($this->id == null)
 			$this->id = 'dippy0';
+		if($this->onChange == null)
+			$this->onChange = "function(){}";
 		if($this->onSuccess == null)
 			$this->onSuccess = "function(){}";
 		if($this->onError == null)
@@ -135,6 +139,7 @@ class DippyWidget extends CWidget {
 			'logid'=>$this->logid,
 			'onSuccess'=>new CJavaScriptExpression($this->onSuccess),
 			'onError'=>new CJavaScriptExpression($this->onError),
+			'onChange'=>new CJavaScriptExpression($this->onChange),
 			'parent'=>$this->parent,
 			'deleteconfirmation'=>$this->deleteConfirmation,
 			'enterSaveText'=>$this->enterSaveText,
@@ -146,8 +151,8 @@ class DippyWidget extends CWidget {
 				'attribute'=>$this->attribute,
 			)),
 		));
-		Yii::app()->getClientScript()->registerScript($this->id
-				,"new Dippy({$options})");
+		Yii::app()->getClientScript()->registerScript($this->id,
+				"new Dippy({$options})");
 
 	}// end run()
 	

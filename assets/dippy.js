@@ -145,6 +145,7 @@ var Dippy = function(options){
 				var _div = item.parent();
 				var _this = _div.data('_this');
 				_this.change(item, prior);
+				options.onChange(options.id, id);
 			}
 		});
 	}
