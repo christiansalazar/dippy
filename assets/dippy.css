@@ -3,6 +3,7 @@
 	padding: 3px;
 	margin: 3px;
 	background-color: white;
+	color: black;
 }
 .dippy .dcontrol {
 	background-color: #ddd;
@@ -32,6 +33,7 @@
 
 .drow-selected {
 	background-color: #ddff99;
+	color: black;
 }
 
 .dippy .drow-removed {

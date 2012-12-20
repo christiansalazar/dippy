@@ -122,6 +122,14 @@ $this->widget('ext.dippy.DippyWidget',array(
 </div>
 ~~~
 
+#jQuery UI and extra CSS.
+
+You can associate the style passing the string 'jquery.ui' to the 'extraCss'
+attribute, Dippy Widget will work togheter with jQuery UI.
+
+Also, you can pass a single class name to the 'extraCss' attribute.
+
+
 #onChange Event
 
 Call a JS function whenever a Dippy selection changes. You can use the

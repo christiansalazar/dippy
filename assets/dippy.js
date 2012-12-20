@@ -114,8 +114,11 @@ var Dippy = function(options){
 	}
 
 	var newItem = function(id, label){
+
+		var className = 'drow';
+
 		div.append( 
-		"<div alt='"+id+"' class='drow'>"+
+		"<div alt='"+id+"' class='"+className+"'>"+
 		"<img class='wait' src='"+options.imgWait+"'>"+
 		"<span class='text' title='"+id+"'>"+label+"</span>"+
 		"<img class='ddelete' src='"+options.imgDelete+"' >"+
@@ -140,8 +143,13 @@ var Dippy = function(options){
 				var prior = div.find("[alt|='"+old_id+"']");
 				var item  = $(this);
 				div.data('current_item',id);
-				item.addClass('drow-selected');	
-				prior.removeClass('drow-selected');
+				
+				var className = 'drow-selected';
+				if(options.extraCss == 'jquery.ui')
+					className = 'ui-state-active';
+				item.addClass(className);	
+				prior.removeClass(className);
+
 				var _div = item.parent();
 				var _this = _div.data('_this');
 				_this.change(item, prior);

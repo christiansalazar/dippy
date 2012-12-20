@@ -88,6 +88,7 @@ class DippyWidget extends CWidget {
 	public $modelName = '';	// example: 'Flavor'
 	public $parentKey; 		// example: 'categoryid' (flavor belongs to catgid)
 	public $attribute;		// example: 'flavor_name'
+	public $extraCss;		// any css class name, or the alias: 'jquery.ui'
 
 	public $newItemLabel = 'New Item';
 	public $deleteConfirmation = 'Please confirm the item deletion.';
@@ -111,6 +112,8 @@ class DippyWidget extends CWidget {
 			$this->onSuccess = "function(){}";
 		if($this->onError == null)
 			$this->onError = "function(){}";
+		if($this->extraCss==null)
+			$this->extraCss='';
 	}
 
 	public function run(){
@@ -119,10 +122,18 @@ class DippyWidget extends CWidget {
 		$delete  = $this->_baseUrl.'/delete.png';
 		$update  = $this->_baseUrl.'/update.png';
 		
+		$css1 = $this->extraCss;
+		$css2 = '';
+		if($this->extraCss == 'jquery.ui'){
+			$css1 = 'ui-widget-content';
+			$css2 = 'ui-widget-header';
+		}
+
+
 		echo 
 "
-<div id={$this->id} class='dippy'>
-	<div class='dcontrol'>
+<div id={$this->id} class='dippy {$css1}'>
+	<div class='dcontrol {$css2}'>
 		<span>{$this->title}</span>
 		<a class='newItem'>{$this->newItemLabel}<img src='{$loading}'></a>
 	</div>
@@ -145,6 +156,7 @@ class DippyWidget extends CWidget {
 			'enterSaveText'=>$this->enterSaveText,
 			'validateErrorText'=>$this->validateErrorText,
 			'validateRegExp'=>$this->validateRegExp,
+			'extraCss'=>$this->extraCss,
 			'data'=>serialize(array(
 				'modelName'=>$this->modelName,
 				'parentKey'=>$this->parentKey,
